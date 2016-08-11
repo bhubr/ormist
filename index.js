@@ -2,6 +2,7 @@ var fs   = require('fs');
 var path = require('path');
 var Promise = require('bluebird');
 var queryBuilders = require('./lib/query-builders');
+var converters = require('./lib/converters');
 
 module.exports = {
 
@@ -33,7 +34,7 @@ module.exports = {
           console.log('ORM:create:' + _modelName + "\n", query);
           return conn.query(query)
           .then(result => conn.query('SELECT * from ' + _modelName + ' WHERE id = ' + result.insertId))
-          .then(entries => rest.snakeToCamel(entries[0]));
+          .then(entries => converters.snakeToCamel(entries[0]));
         },
     
         read: function(id) {
@@ -43,7 +44,7 @@ module.exports = {
           return conn.query('SELECT * from ' + _modelName + where)
           .then(entries => {
             if (entries.length === 0) return undefined;
-            return rest.snakeToCamel(entries[0]);
+            return converters.snakeToCamel(entries[0]);
           });
         },
 
@@ -51,7 +52,7 @@ module.exports = {
           const conn = _db.getConnection();
           console.log('ORM:readAll:' + _modelName);
           return conn.query('SELECT * from ' + _modelName)
-          .then(entries => entries.map(rest.snakeToCamel));
+          .then(entries => entries.map(converters.snakeToCamel));
 
         },
 
@@ -61,7 +62,7 @@ module.exports = {
           console.log('ORM:update:' + _modelName + "\n", query);
           return conn.query(query)
           .then(result => conn.query('SELECT * from ' + _modelName + ' WHERE id = ' + id))
-          .then(entries => rest.snakeToCamel(entries[0]));
+          .then(entries => converters.snakeToCamel(entries[0]));
           // .then(console.log);
         },
 
