@@ -25,7 +25,7 @@ module.exports = {
    * Turn model definition to ORM Model
    */
   ormize: function(modelName, modelDefinition) {
-    console.log('ormize...', arguments);
+    console.log('ormize =>', modelName);
     return (_modelName => {
       return {
         create: function(values) {
@@ -76,13 +76,13 @@ module.exports = {
   },
 
   /**
-   * Get models from model directories
+   * Load models from model directories
    */
-  getModels: function() {
+  loadModels: function() {
     var _this = this;
     return new Promise(function(resolve, reject) {
       console.log('getModels', _this);
-      var modelsDir = path.normalize(__dirname + '/models');
+      var modelsDir = path.normalize(__dirname + '/../../models');
       var files = fs.readdirSync(modelsDir);
       var _models = {};
       files.forEach(function(file) {
@@ -91,14 +91,19 @@ module.exports = {
         _models[modelName] = modelDefinition;
       });
       for (var modelName in _models) {
-        console.log(modelName, _models[modelName]);
+        // console.log(modelName, _models[modelName]);
         _this.models[modelName] = _this.ormize(modelName, _models[modelName]);
       }
-      console.log("done", _this.models);
+      console.log("done", Object.keys(_this.models));
       resolve(_this.models);
     });
+  },
 
-
+  /**
+   * Get models
+   */
+  getModels: function() {
+    return this.models;
   },
 
   /**
@@ -107,13 +112,7 @@ module.exports = {
   init: function(driver, params) {
     this.db = require('./lib/db')(driver, params);
     return this.db.connect()
-    .then(ret => {
-      // console.log(ret);
-      // console.log(this);
-      // console.log('\n### DB connection', this.db.getConnection());
-      return this.getModels();
-      // .catch(console.log);
-    });
+    .then(() => this.loadModels());
   }
 
 };
