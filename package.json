@@ -1,11 +1,12 @@
 {
   "name": "ormist",
   "description": "ORMist nano-ORM",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "t1z <littlebuddha31@gmail.com>",
   "license": "WTFPL",
   "repository": "https://github.com/t1z/ormist",
   "dependencies": {
-    "bluebird": "^3.4.1"
+    "bluebird": "^3.4.1",
+    "lodash": "^4.14.2"
   }
 }
