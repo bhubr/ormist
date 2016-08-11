@@ -1,8 +1,7 @@
 var fs   = require('fs');
 var path = require('path');
 var Promise = require('bluebird');
-
-
+var queryBuilders = require('./lib/query-builders');
 
 module.exports = {
 
@@ -26,11 +25,11 @@ module.exports = {
    */
   ormize: function(modelName, modelDefinition) {
     console.log('ormize =>', modelName);
-    return (_modelName => {
+    return ((_modelName, _db) => {
       return {
         create: function(values) {
-          const conn = db.getConnection();
-          const query = buildInsertQuery(_modelName, values);
+          const conn = _db.getConnection();
+          const query = queryBuilders.insert(_modelName, values);
           console.log('ORM:create:' + _modelName + "\n", query);
           return conn.query(query)
           .then(result => conn.query('SELECT * from ' + _modelName + ' WHERE id = ' + result.insertId))
@@ -38,7 +37,7 @@ module.exports = {
         },
     
         read: function(id) {
-          const conn = db.getConnection();
+          const conn = _db.getConnection();
           const where = ' WHERE id = ' + id;
           console.log('ORM:read:' + _modelName);
           return conn.query('SELECT * from ' + _modelName + where)
@@ -49,7 +48,7 @@ module.exports = {
         },
 
         readAll: function() {
-          const conn = db.getConnection();
+          const conn = _db.getConnection();
           console.log('ORM:readAll:' + _modelName);
           return conn.query('SELECT * from ' + _modelName)
           .then(entries => entries.map(rest.snakeToCamel));
@@ -57,8 +56,8 @@ module.exports = {
         },
 
         update: function(id, values) {
-          const conn = db.getConnection();
-          const query = buildUpdateQuery(_modelName, id, values);
+          const conn = _db.getConnection();
+          const query = queryBuilders.update(_modelName, id, values);
           console.log('ORM:update:' + _modelName + "\n", query);
           return conn.query(query)
           .then(result => conn.query('SELECT * from ' + _modelName + ' WHERE id = ' + id))
@@ -67,12 +66,12 @@ module.exports = {
         },
 
         delete: function(id) {
-          const conn = db.getConnection();
+          const conn = _db.getConnection();
           console.log('ORM:delete:' + _modelName);
           return conn.query('DELETE from ' + _modelName + ' WHERE id = ' + id);
         }
       };
-    })(modelName);
+    })(modelName, this.db);
   },
 
   /**
@@ -116,9 +115,3 @@ module.exports = {
   }
 
 };
-
-
-
-
-
-
