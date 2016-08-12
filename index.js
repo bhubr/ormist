@@ -81,7 +81,6 @@ module.exports = {
   loadModels: function() {
     var _this = this;
     return new Promise(function(resolve, reject) {
-      console.log('getModels', _this);
       var modelsDir = path.normalize(__dirname + '/../../models');
       var files = fs.readdirSync(modelsDir);
       var _models = {};
@@ -94,7 +93,6 @@ module.exports = {
         // console.log(modelName, _models[modelName]);
         _this.models[modelName] = _this.ormize(modelName, _models[modelName]);
       }
-      console.log("done", Object.keys(_this.models));
       resolve(_this.models);
     });
   },
