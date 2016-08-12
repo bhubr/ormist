@@ -1,7 +1,7 @@
 {
   "name": "ormist",
   "description": "ORMist nano-ORM",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "author": "t1z <littlebuddha31@gmail.com>",
   "license": "WTFPL",
   "repository": "https://github.com/t1z/ormist",
