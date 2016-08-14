@@ -49,7 +49,10 @@ module.exports = {
         },
 
         latest: function() {
-          return this.readAll("ORDER BY id DESC LIMIT 1");
+          return this.readAll("ORDER BY id DESC LIMIT 1")
+          .then(tokens => {
+            return tokens.length > 0 ? tokens[0] : undefined;
+          });
         },
 
         readAll: function(criteria) {
