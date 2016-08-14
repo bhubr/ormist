@@ -53,7 +53,7 @@ module.exports = {
         },
 
         readAll: function(criteria) {
-          const criteria = criteria || "";
+          criteria = criteria || "";
           const conn = _db.getConnection();
           console.log('ORM:readAll:' + _modelName);
           return conn.query('SELECT * from ' + _modelName + ' ' + criteria)
