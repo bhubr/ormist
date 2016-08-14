@@ -48,12 +48,16 @@ module.exports = {
           });
         },
 
-        readAll: function() {
+        latest: function() {
+          return this.readAll("ORDER BY id DESC LIMIT 1");
+        },
+
+        readAll: function(criteria) {
+          const criteria = criteria || "";
           const conn = _db.getConnection();
           console.log('ORM:readAll:' + _modelName);
-          return conn.query('SELECT * from ' + _modelName)
+          return conn.query('SELECT * from ' + _modelName + ' ' + criteria)
           .then(entries => entries.map(converters.snakeToCamel));
-
         },
 
         update: function(id, values) {
